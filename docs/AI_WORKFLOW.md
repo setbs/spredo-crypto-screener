@@ -6,7 +6,7 @@ I used ChatGPT/Codex to turn the requirements into a small FastAPI and React app
 
 The generated implementation was reviewed for correct filtering, separation of frontend/backend responsibilities, request volume, caching, and honest handling of empty results and synthetic fixtures. Automated checks cover the filtering rules, mocked CoinGecko integration, and frontend search/filter/sort behavior. The frontend build also checks TypeScript.
 
-Validation performed with AI assistance: 44 backend tests and 9 frontend tests passed, the production frontend build succeeded, and a browser smoke check verified the Python-served interface at desktop and mobile widths. A real CoinGecko market request succeeded, but a full unauthenticated scan hit the upstream rate limit; that limitation is documented.
+Validation performed with AI assistance: 44 backend tests and 9 frontend tests passed, the production frontend build succeeded, and a browser smoke check verified the Python-served interface at desktop and mobile widths. An authenticated live scan returned HTTP 200: 1,000 market listings, 225 numeric candidates, and 25 detail checks within the configured limits. No checked projects passed all six conditions; the response reported both coverage limits. An earlier unauthenticated attempt hit the shared-IP rate limit.
 
 ## Human review — complete before submitting
 

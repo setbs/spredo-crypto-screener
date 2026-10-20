@@ -108,7 +108,7 @@ The backend tests mock CoinGecko; they require no key and do not consume API quo
 
 Development checks passed: **44 backend tests**, **9 frontend tests**, and the production build. An additional browser smoke check against the Python-served build covered search, strict FDV filtering, all four sort options, empty results, HTTP 503/retry, and a 390px mobile viewport. The browser made no external API requests.
 
-Live verification during development: a real `/coins/markets` request succeeded. A subsequent full scan without a key hit CoinGecko's rate limit, so a complete live scan was not verified in that environment. The backend reports this as an error; use your own Demo API key to check live behavior.
+Live verification during development: an authenticated scan using a CoinGecko Demo API key returned HTTP 200. It scanned 1,000 market listings, found 225 numeric candidates, and checked details for 25 candidates within the configured request limit. None of those checked projects passed all six conditions. Both truncation flags were reported; the remaining candidates were not checked. A previous unauthenticated attempt hit the shared-IP rate limit.
 
 ## Structure
 
