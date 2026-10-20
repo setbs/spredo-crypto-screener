@@ -15,10 +15,9 @@ class Settings(BaseSettings):
     data_mode: Literal["live", "demo"] = "live"
     coingecko_api_key: SecretStr = SecretStr("")
     coingecko_api_tier: Literal["demo", "pro"] = "demo"
-    market_pages: int = Field(default=4, ge=1, le=100)
-    max_detail_requests: int = Field(default=25, ge=1, le=1000)
-    cache_ttl_seconds: int = Field(default=300, ge=1)
-    request_interval_seconds: float = Field(default=2.1, ge=0)
+    cache_ttl_seconds: int = Field(default=3600, ge=1)
+    request_interval_seconds: float = Field(default=0.75, ge=0)
+    scan_cache_path: Path | None = Path(__file__).resolve().parents[1] / ".cache" / "live-scan.json"
 
     @property
     def api_url(self) -> str:

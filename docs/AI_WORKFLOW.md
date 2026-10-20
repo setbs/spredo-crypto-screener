@@ -4,9 +4,9 @@
 
 I used ChatGPT/Codex to turn the requirements into a small FastAPI and React application, check the CoinGecko field mappings against the official documentation, implement the API and UI, and write tests and setup instructions. Parallel AI tasks covered the frontend, API research, and backend tests. AI helped most with quickly identifying that preview status and TVL require per-coin detail requests, and with covering strict threshold and missing-data cases.
 
-The generated implementation was reviewed for correct filtering, separation of frontend/backend responsibilities, request volume, caching, and honest handling of empty results and synthetic fixtures. Automated checks cover the filtering rules, mocked CoinGecko integration, and frontend search/filter/sort behavior. The frontend build also checks TypeScript.
+The generated implementation was reviewed for correct filtering, separation of frontend/backend responsibilities, request volume, caching, and honest handling of empty results. Review exposed a material limitation in the first version: it checked only a capped subset of candidates. This was replaced with a background scan that checks every relevant candidate, saves progress, and distinguishes scanning, completed, and error states. Real inspected examples and rejection counts make an empty result explainable without weakening the requested conditions.
 
-Validation performed with AI assistance: 44 backend tests and 9 frontend tests passed, the production frontend build succeeded, and a browser smoke check verified the Python-served interface at desktop and mobile widths. An authenticated live scan returned HTTP 200: 1,000 market listings, 225 numeric candidates, and 25 detail checks within the configured limits. No checked projects passed all six conditions; the response reported both coverage limits. An earlier unauthenticated attempt hit the shared-IP rate limit.
+Validation passed: 54 backend tests, 13 frontend tests, TypeScript checking, and the production build. A completed authenticated live scan retrieved 2,500 market listings and checked all 626 numeric candidates. All 626 had `preview_listing=false`, so no projects passed every requested condition. Browser checks verified real progress-to-completion polling, separate rejection diagnostics, and desktop/mobile layouts. The API key remains only in local server configuration. Captured counts and real inspected examples are in `docs/live-verification.json`.
 
 ## Human review — complete before submitting
 
@@ -16,6 +16,6 @@ The paragraph above describes AI-assisted development and automated review. It d
 - Try demo mode: search `eth`, lower the FDV limit, and sort both numeric columns.
 - Inspect `backend/app/filters.py`, especially strict comparisons and the preview flag.
 - Read the coverage and preview-listing limitations in the README.
-- If you have a CoinGecko key, try live mode and inspect the returned metadata.
+- With a CoinGecko key, try live mode, wait for `meta.status=complete`, and inspect the coverage and rejection diagnostics.
 
 Report any unverified live behavior accurately. Do not claim an exhaustive market scan or real data in demo mode.

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { formatCurrency, formatFullCurrency, selectProjects } from "./projects";
+import { ScanDiagnostics, ScanStatus } from "./ScanStatus";
 import type { ProjectsResponse, SortDirection, SortKey } from "./types";
 
 type IconName = "search" | "refresh" | "arrow" | "info" | "grid";
@@ -73,14 +74,15 @@ function App() {
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const activeRequest = useRef<AbortController | null>(null);
 
-  const loadProjects = useCallback(async () => {
+  const loadProjects = useCallback(async (retry = false, background = false) => {
+    if (background && activeRequest.current) return;
     activeRequest.current?.abort();
     const controller = new AbortController();
     activeRequest.current = controller;
-    setLoading(true);
+    if (!background) setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/projects", {
+      const response = await fetch(retry ? "/api/projects?retry=true" : "/api/projects", {
         signal: controller.signal,
       });
       const body = await response.json();
@@ -93,8 +95,10 @@ function App() {
       }
       if (
         !Array.isArray(body.projects) ||
+        !Array.isArray(body.inspected_projects) ||
         !body.meta ||
-        !["live", "demo"].includes(body.meta.mode)
+        !["live", "demo"].includes(body.meta.mode) ||
+        !["scanning", "complete", "error"].includes(body.meta.status)
       ) {
         throw new Error(
           "The API returned an unexpected response. Please try again.",
@@ -111,7 +115,10 @@ function App() {
             : "Could not load projects. Please try again.",
       );
     } finally {
-      if (!controller.signal.aborted) setLoading(false);
+      if (!controller.signal.aborted) {
+        setLoading(false);
+        if (activeRequest.current === controller) activeRequest.current = null;
+      }
     }
   }, []);
 
@@ -119,6 +126,12 @@ function App() {
     void loadProjects();
     return () => activeRequest.current?.abort();
   }, [loadProjects]);
+
+  useEffect(() => {
+    if (data?.meta.status !== "scanning") return;
+    const timer = window.setInterval(() => void loadProjects(false, true), 2_000);
+    return () => window.clearInterval(timer);
+  }, [data?.meta.status, loadProjects]);
 
   const maxFdv = fdvInput.trim() === "" ? null : Number(fdvInput);
   const invalidFdv =
@@ -147,6 +160,8 @@ function App() {
     sortKey !== "market_cap" ||
     sortDirection !== "desc";
   const initialLoading = loading && !data;
+  const scanning = data?.meta.status === "scanning";
+  const scanError = error ?? data?.meta.error;
 
   function resetFilters() {
     setSearch("");
@@ -202,9 +217,10 @@ function App() {
             className="button refresh-button"
             onClick={() => void loadProjects()}
             disabled={loading}
+            aria-label={scanning ? "Refresh scan progress" : "Refresh data"}
           >
-            <Icon name="refresh" className={loading ? "spin" : ""} />
-            {loading ? "Fetching data" : "Refresh data"}
+            <Icon name="refresh" className={loading || scanning ? "spin" : ""} />
+            {loading ? "Fetching data" : scanning ? "Refresh progress" : "Refresh data"}
           </button>
         </section>
 
@@ -248,22 +264,23 @@ function App() {
             </div>
           </div>
         )}
-        {error && (
+        {scanError && (
           <div className="notice error-notice" role="alert">
             <Icon name="info" />
             <div>
-              <strong>Unable to load projects.</strong> {error}
-              {data && " The previous results remain visible."}
+              <strong>{data?.meta.status === "error" ? "Scan interrupted." : "Unable to load projects."}</strong>{" "}{scanError}
+              {data && " Scan progress and any matches remain visible. Retry to continue."}
             </div>
             <button
               className="text-button"
-              onClick={() => void loadProjects()}
+              onClick={() => void loadProjects(true)}
               disabled={loading}
             >
               Try again ↗
             </button>
           </div>
         )}
+        {data && <ScanStatus data={data} />}
         {data && data.meta.warnings.length > 0 && (
           <div className="notice warning-notice">
             <Icon name="info" />
@@ -284,7 +301,7 @@ function App() {
         >
           <article className="stat-card stat-primary">
             <div className="stat-label">
-              Matching projects<span className="stat-decoration">↗</span>
+              {scanning ? "Matches found so far" : "Matching projects"}<span className="stat-decoration">↗</span>
             </div>
             <div className="stat-value">
               {data ? projects.length.toLocaleString("en-US") : "—"}
@@ -321,11 +338,11 @@ function App() {
         <section
           className="results-panel"
           aria-labelledby="results-title"
-          aria-busy={loading}
+          aria-busy={loading || scanning}
         >
           <div className="results-heading">
             <div className="results-title">
-              <h2 id="results-title">All projects</h2>
+              <h2 id="results-title">Qualifying projects{scanning ? " so far" : ""}</h2>
               <span className="count-badge">
                 {data ? projects.length : "—"}
               </span>
@@ -338,7 +355,7 @@ function App() {
                     {data.meta.mode === "live" ? "LIVE DATA" : "DEMO DATA"}
                   </span>
                   <span className="updated-at">
-                    {data.meta.cached ? "Cached" : "Fetched"}{" "}
+                    {scanning ? "Scan started" : data.meta.cached ? "Cached" : "Fetched"}{" "}
                     <time
                       dateTime={data.meta.fetched_at}
                       title={new Date(data.meta.fetched_at).toLocaleString()}
@@ -450,6 +467,13 @@ function App() {
                 Try again
               </button>
             </div>
+          ) : projects.length === 0 && data.projects.length === 0 && scanning ? (
+            <div className="table-loading" role="status">
+              <div className="loading-orbit"><span /></div>
+              <h3>Full live scan in progress</h3>
+              <p>No qualifying projects found yet. The scan is still running.</p>
+              <span>Counts above update automatically. Final results appear after every candidate is checked.</span>
+            </div>
           ) : projects.length === 0 ? (
             <div className="empty-state" role="status">
               <div className="empty-icon">
@@ -458,13 +482,20 @@ function App() {
               <h3>
                 {data.projects.length
                   ? "No projects match your filters"
-                  : "No projects passed the base criteria"}
+                  : data.meta.status === "error"
+                    ? "The scan has not finished"
+                    : "Full scan complete: no qualifying projects"}
               </h3>
               <p>
                 {data.projects.length
                   ? "Try another project name or increase your FDV limit."
-                  : "These criteria are selective. Review the coverage notes or refresh later."}
+                  : data.meta.status === "error"
+                    ? "Retry the scan to continue checking all six criteria. Progress is saved."
+                    : "No projects matched all six strict criteria. Review the real inspected samples and rejection reasons below."}
               </p>
+              {!data.projects.length && data.meta.status === "complete" && data.meta.mode === "live" && (
+                <p>CoinGecko’s preview_listing flag describes upcoming listings and must be true.</p>
+              )}
               {filtersChanged && (
                 <button className="button" onClick={resetFilters}>
                   Reset filters
@@ -600,7 +631,7 @@ function App() {
           <div className="table-footer">
             <span aria-live="polite">
               {data
-                ? `Showing ${projects.length} of ${data.projects.length} qualifying projects`
+                ? `Showing ${projects.length} of ${data.projects.length} qualifying projects${scanning ? " found so far · Scan incomplete" : data.meta.status === "error" ? " · Scan interrupted" : ""}`
                 : "Results from your Python backend"}
             </span>
             <span>All values in USD</span>
@@ -628,6 +659,8 @@ function App() {
             </span>
           </div>
         )}
+
+        {data && <ScanDiagnostics data={data} />}
 
         <footer className="page-footer">
           <span className="footer-brand">float.</span>

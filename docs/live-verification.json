@@ -1,0 +1,163 @@
+{
+  "source": "CoinGecko API v3, authenticated real-data scan",
+  "completed_at": "2026-10-20T12:39:32.312749+00:00",
+  "status": "complete",
+  "market_listings_scanned": 2500,
+  "scope": "All market pages until the descending 24h volume reaches $50,000; all numeric candidates checked.",
+  "candidates": 626,
+  "details_checked": 626,
+  "matching_projects": 0,
+  "rejection_counts": {
+    "preview_listing is false": 626,
+    "TVL is unavailable": 514,
+    "TVL must exceed $50,000": 14,
+    "24h volume must exceed $50,000": 3
+  },
+  "sample_rejected_projects": [
+    {
+      "id": "little-john",
+      "name": "Little John",
+      "symbol": "john",
+      "market_cap": 17195155.0,
+      "fdv": 17195155.0,
+      "volume_24h": 167501374.0,
+      "tvl": null,
+      "preview_listing": false,
+      "rejection_reasons": [
+        "preview_listing is false",
+        "TVL is unavailable"
+      ]
+    },
+    {
+      "id": "gitcoin",
+      "name": "Gitcoin",
+      "symbol": "gtc",
+      "market_cap": 30313143.0,
+      "fdv": 34646957.0,
+      "volume_24h": 154344713.0,
+      "tvl": null,
+      "preview_listing": false,
+      "rejection_reasons": [
+        "preview_listing is false",
+        "TVL is unavailable"
+      ]
+    },
+    {
+      "id": "pha",
+      "name": "PHALA",
+      "symbol": "pha",
+      "market_cap": 50199518.0,
+      "fdv": 58495753.0,
+      "volume_24h": 118418467.0,
+      "tvl": null,
+      "preview_listing": false,
+      "rejection_reasons": [
+        "preview_listing is false",
+        "TVL is unavailable"
+      ]
+    },
+    {
+      "id": "metaplex",
+      "name": "Metaplex",
+      "symbol": "mplx",
+      "market_cap": 37448925.0,
+      "fdv": 79324792.0,
+      "volume_24h": 40702295.0,
+      "tvl": null,
+      "preview_listing": false,
+      "rejection_reasons": [
+        "preview_listing is false",
+        "TVL is unavailable"
+      ]
+    },
+    {
+      "id": "caldera",
+      "name": "Caldera",
+      "symbol": "era",
+      "market_cap": 13035853.0,
+      "fdv": 74597156.0,
+      "volume_24h": 28803981.0,
+      "tvl": null,
+      "preview_listing": false,
+      "rejection_reasons": [
+        "preview_listing is false",
+        "TVL is unavailable"
+      ]
+    },
+    {
+      "id": "iexec-rlc",
+      "name": "iExec RLC",
+      "symbol": "rlc",
+      "market_cap": 61484365.0,
+      "fdv": 61484365.0,
+      "volume_24h": 22816913.0,
+      "tvl": null,
+      "preview_listing": false,
+      "rejection_reasons": [
+        "preview_listing is false",
+        "TVL is unavailable"
+      ]
+    },
+    {
+      "id": "puffer-finance",
+      "name": "Puffer",
+      "symbol": "puffer",
+      "market_cap": 24186181.0,
+      "fdv": 42070205.0,
+      "volume_24h": 19504860.0,
+      "tvl": 28259063.0,
+      "preview_listing": false,
+      "rejection_reasons": [
+        "preview_listing is false"
+      ]
+    },
+    {
+      "id": "epic-chain",
+      "name": "Epic Chain",
+      "symbol": "epic",
+      "market_cap": 6218118.0,
+      "fdv": 6218118.0,
+      "volume_24h": 17902129.0,
+      "tvl": null,
+      "preview_listing": false,
+      "rejection_reasons": [
+        "preview_listing is false",
+        "TVL is unavailable"
+      ]
+    },
+    {
+      "id": "bubblemaps",
+      "name": "Bubblemaps",
+      "symbol": "bmt",
+      "market_cap": 14583767.0,
+      "fdv": 19405808.0,
+      "volume_24h": 16173701.0,
+      "tvl": null,
+      "preview_listing": false,
+      "rejection_reasons": [
+        "preview_listing is false",
+        "TVL is unavailable"
+      ]
+    },
+    {
+      "id": "elsa",
+      "name": "Elsa",
+      "symbol": "elsa",
+      "market_cap": 14706472.0,
+      "fdv": 64226010.0,
+      "volume_24h": 12120950.0,
+      "tvl": null,
+      "preview_listing": false,
+      "rejection_reasons": [
+        "preview_listing is false",
+        "TVL is unavailable"
+      ]
+    }
+  ],
+  "validation": {
+    "backend_tests_passed": 54,
+    "frontend_tests_passed": 13,
+    "production_build": "passed",
+    "live_browser_check": "passed"
+  }
+}

@@ -767,6 +767,105 @@ abbr[title] {
   margin-left: auto;
   color: inherit;
 }
+.scan-status {
+  background: #edf4ec;
+  border: 1px solid #d9e6d5;
+  border-radius: 8px;
+  padding: 15px 17px;
+  margin-bottom: 22px;
+  color: #4e6a47;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.scan-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.scan-heading > span:last-child {
+  margin-left: auto;
+  font-size: 10px;
+  color: #7a8b72;
+}
+.scan-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #65935b;
+  flex-shrink: 0;
+}
+.scan-scanning .scan-indicator {
+  box-shadow: 0 0 0 4px #65935b20;
+}
+.scan-error {
+  background: #fdf5ec;
+  border-color: #edddc9;
+}
+.scan-error .scan-indicator {
+  background: #b88a52;
+}
+.scan-status p {
+  margin: 6px 0 0;
+}
+.scan-explanation {
+  color: #7b8b72;
+  max-width: 850px;
+}
+.diagnostics-panel {
+  margin-top: 25px;
+  background: #fff;
+  border: 1px solid #e0e6dc;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.diagnostics-heading {
+  padding: 20px 24px 15px;
+}
+.diagnostics-heading p,
+.rejection-counts {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #7a8472;
+}
+.diagnostics-heading p {
+  margin: 9px 0 0;
+  max-width: 920px;
+}
+.diagnostics-heading code {
+  color: #65745c;
+  font-size: 10px;
+}
+.rejection-counts {
+  border-top: 1px solid #edf0e9;
+  padding: 13px 24px 17px;
+}
+.rejection-counts ul {
+  margin: 8px 0;
+  padding-left: 17px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 30px;
+}
+.rejection-counts p {
+  margin: 0;
+  font-size: 10px;
+}
+.diagnostics-table {
+  min-width: 1000px;
+  font-size: 10px;
+}
+.diagnostics-table td {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.rejection-reasons {
+  min-width: 190px;
+  max-width: 320px;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #9b7253;
+}
 .empty-state,
 .table-loading {
   display: flex;
@@ -1035,6 +1134,19 @@ h3 {
   .notice {
     font-size: 10px;
     margin-bottom: 18px;
+  }
+  .scan-heading > span:last-child {
+    width: 100%;
+    margin-left: 15px;
+  }
+  .scan-status {
+    font-size: 10px;
+    padding: 13px;
+  }
+  .diagnostics-heading,
+  .rejection-counts {
+    padding-left: 16px;
+    padding-right: 16px;
   }
   .coverage {
     font-size: 8px;

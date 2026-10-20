@@ -2,10 +2,10 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 import httpx
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 
-from .coingecko import CoinGeckoClient, UpstreamError
+from .coingecko import CoinGeckoClient
 from .config import Settings
 from .models import ProjectsResponse
 from .service import ProjectService
@@ -20,7 +20,10 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
             base_url=settings.api_url, timeout=15.0, transport=transport,
         ) as http:
             app.state.projects = ProjectService(CoinGeckoClient(http, settings), settings)
-            yield
+            try:
+                yield
+            finally:
+                await app.state.projects.close()
 
     app = FastAPI(title="Spredo Crypto Screener", version="0.1.0", lifespan=lifespan)
 
@@ -29,11 +32,8 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
         return {"status": "ok", "mode": settings.data_mode}
 
     @app.get("/api/projects", response_model=ProjectsResponse)
-    async def projects(request: Request) -> ProjectsResponse:
-        try:
-            return await request.app.state.projects.get_projects()
-        except UpstreamError as exc:
-            raise HTTPException(status_code=exc.status_code, detail=str(exc)) from exc
+    async def projects(request: Request, retry: bool = False) -> ProjectsResponse:
+        return await request.app.state.projects.get_projects(retry=retry)
 
     # After `npm run build`, Python can serve both UI and API on one origin.
     frontend = Path(__file__).resolve().parents[2] / "frontend" / "dist"
