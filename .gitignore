@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.py[cod]
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+coverage/
+.DS_Store
+.local-git/
+artifacts/
+.agents/
+.codex/
+.aws/

@@ -1,0 +1,8 @@
+[
+  {"id":"demo-ether-garden","name":"Ether Garden","symbol":"EGR","preview_listing":true,"market_data":{"market_cap":{"usd":18500000},"fully_diluted_valuation":{"usd":42000000},"total_volume":{"usd":1240000},"total_value_locked":{"usd":8600000},"total_supply":100000000,"max_supply":100000000}},
+  {"id":"demo-nova-finance","name":"Nova Finance","symbol":"NOVA","preview_listing":true,"market_data":{"market_cap":{"usd":32200000},"fully_diluted_valuation":{"usd":68000000},"total_volume":{"usd":2450000},"total_value_locked":{"usd":18400000},"total_supply":50000000,"max_supply":50000000}},
+  {"id":"demo-orbit-protocol","name":"Orbit Protocol","symbol":"ORB","preview_listing":true,"market_data":{"market_cap":{"usd":7400000},"fully_diluted_valuation":{"usd":12500000},"total_volume":{"usd":380000},"total_value_locked":{"usd":3200000},"total_supply":21000000,"max_supply":21000000}},
+  {"id":"demo-tide-network","name":"Tide Network","symbol":"TIDE","preview_listing":true,"market_data":{"market_cap":{"usd":11600000},"fully_diluted_valuation":{"usd":24000000},"total_volume":{"usd":790000},"total_value_locked":{"usd":6100000},"total_supply":200000000,"max_supply":200000000}},
+  {"id":"demo-fern-swap","name":"Fern Swap","symbol":"FERN","preview_listing":true,"market_data":{"market_cap":{"usd":2900000},"fully_diluted_valuation":{"usd":5800000},"total_volume":{"usd":96000},"total_value_locked":{"usd":870000},"total_supply":10000000,"max_supply":10000000}},
+  {"id":"demo-arc-vault","name":"Arc Vault","symbol":"ARC","preview_listing":true,"market_data":{"market_cap":{"usd":43800000},"fully_diluted_valuation":{"usd":92000000},"total_volume":{"usd":3100000},"total_value_locked":{"usd":27400000},"total_supply":80000000,"max_supply":80000000}}
+]
